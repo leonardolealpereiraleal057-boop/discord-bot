@@ -1,46 +1,11 @@
-const {
-  Client,
-  GatewayIntentBits,
-  ChannelType
-} = require("discord.js");
-
-const {
-  joinVoiceChannel,
-  VoiceConnectionStatus,
-  entersState
-} = require("@discordjs/voice");
+const { Client, GatewayIntentBits } = require("discord.js");
 
 const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildVoiceStates
-  ]
+  intents: [GatewayIntentBits.Guilds]
 });
 
-client.once("ready", async () => {
-  console.log(`Bot online: ${client.user.tag}`);
-
-  try {
-    const guild = await client.guilds.fetch(process.env.GUILD_ID);
-    const channel = await guild.channels.fetch(process.env.CHANNEL_ID);
-
-    if (!channel || channel.type !== ChannelType.GuildVoice) {
-      throw new Error("Canal de voz não encontrado");
-    }
-
-    const connection = joinVoiceChannel({
-      channelId: channel.id,
-      guildId: guild.id,
-      adapterCreator: guild.voiceAdapterCreator,
-      selfDeaf: true
-    });
-
-    await entersState(connection, VoiceConnectionStatus.Ready, 30000);
-
-    console.log("Bot conectado na call!");
-  } catch (error) {
-    console.error(error);
-  }
+client.once("ready", () => {
+  console.log(`${client.user.tag} está online!`);
 });
 
 client.login(process.env.DISCORD_TOKEN);
